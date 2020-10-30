@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Juegos de azar
+# Juegos de azar
 
 Con R podemos jugar juegos de azar: digamos, tirar un dado o lanzar una moneda, y mucho más rápido que nosotros. Y con eso vamos establecer algunos elementos esenciales de la probabilidad
 
