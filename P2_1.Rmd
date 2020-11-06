@@ -23,7 +23,7 @@ Tenemos que decir a R de dónde elegimos y cuántos elegir. R puede muestrear co
 <b>Con reemplazo</b> significa que elegimos un elemento de nuestro universo  y lo devolvemos. 
 <b>Sin reemplazo</b> significa qn elemento de nuestro universo y no lo devolvemos. 
 
-#Un dado
+# Un dado
 Entonces, digamos que queremos que R lance un dado de seis caras una vez. Vamos a usar un nuevo formato para escribir una secuencia de números, como ya los habíamos aprendido.
 ```{r}
 1:6
@@ -68,21 +68,10 @@ tirar_moneda <- function(n) {
 tirar_moneda(10)
 
 ```
-Podemos hacer una función más general que use nuestros objetos moneda y dado
-```{r}
-tirar<-function(data,n) {
-    sample(data, n, rep = T)
-}
-tirar(dado,1)
-tirar(moneda,2)
-
-```
 
 
-
-#Aleatorio, pero regular
+# Aleatorio, pero regular
 Con estas funciones ya podemos ver qué pasa con nuestras probabilidades cuando repetimos 
-
 
 Veamos con el dado
 ```{r}
@@ -196,24 +185,6 @@ Si X sigue una distribución normal N(μ,σ), entonces:
 <li>rnorm(n,mu,sigma) genera n valores aleatorios N(μ,σ)</li>
 
 Supongamos que X≈N(200,50). Entonces:
-Calculamos f(150)
-
-```{r}
-dnorm(150,200,50)
-```
-
-Podemos hacer varios valores posibles
-```{r}
-x<-seq(0,400,by=0.5)
-dnorm(x,200,50)
-```
-
-Con esto también podemos graficar
-```{r}
-curve(dnorm(x,200,50),xlim=c(0,400),col="blue",lwd=2,
-      xlab="x",ylab="f(x)",main="Función de Densidad N(200,50)")
-```
-
 
 Calculamos la probabilidad P(X≤180)
 ```{r}
@@ -233,17 +204,20 @@ pnorm(168,200,50)-pnorm(150,200,50)
 ```
 
 # Importación de datos
+
 ## Desde STATA y SPSS
 
-Si bien también se puede realizar desde el paquete foreign. Pero este no importa algunas características como las etiquetas y tampoco funciona con las versiones más nuevas de STATA. Vamos a instalar otro paquete, compatible con el mundo tidyverse. 
+Si bien también se puede realizar desde el paquete "foreign". Pero este no importa algunas características como las etiquetas y tampoco funciona con las versiones más nuevas de STATA. Vamos a instalar otro paquete, compatible con el mundo tidyverse. 
 
 ```{r 11}
-library(haven) #pacman lo cargó pero lo ponemos acá para hablar de esta función
+#install.packages("haven")
+library(haven) 
 ```
 Recuerda que no hay que instalarlo (viene adentro de tidyverse). Se instalasólo la primera vez. Una vez instalado un paquete, lo llamamos con el comando "library"
 
 ```{r}
 ecovid0420 <- read_dta("./datos/ecovid0420.dta")
+ecovid0420 <- read_dta("https://github.com/aniuxa/Taller_R/raw/master/datos/ecovid0420.dta")
 ```
 
 !Importante, a R no le gustan los objetos con nombres que empiezan en números
@@ -255,8 +229,53 @@ Un spoiler:
 summary(ecovid0420$pe10_1)
 ```
 
+```{r}
+hist(ecovid0420$pe10_1)
+```
+
 
 ```{r}
 t.test(ecovid0420$pe10_1)
 ```
+
+¿Cómo importaríamos desde Excel?
+
+## Desde Excel 
+El paquete más compatible con RStudio es readxl. A veces, otros paquetes tienen más problemas de configuración entre R y el Java.
+
+```{r 2}
+library(readxl) # Recuerda que hay llamar al paquete
+```
+
+
+```{r 3}
+ICE_2018 <- read_excel("./datos/ICE_2018.xlsx", sheet = "para_importar")
+#View(ICE_2018)
+```
+
+Como el nombre de paquete lo indica, sólo lee. Para escribir en este formato, recomiendo el paquete "writexl". Lo instalamos anteriormente.
+
+Si quisiéramos exportar un objeto a Excel
+```{r 5}
+#install.packages("writexl")
+library(writexl)
+write_xlsx(ICE_2018, path = "Mi_Exportación.xlsx")
+```
+
+## Desde google
+
+También podemos importar archivos de "google sheets", utilizamos el paquete "googlesheets4". Más sobre este paquete lo podemos revisar acá <https://github.com/tidyverse/googlesheets4>.
+
+Debemos tener el link de "edición" del archivo y debe ser público, o debemos de tener permiso con la cuenta que vamos autenticar:
+
+```{r}
+#install.packages(googlesheets4)
+library(googlesheets4)
+ej_google<-read_sheet("https://docs.google.com/spreadsheets/d/1gGEug2SgA8G1cOCSrmzkt4bmFYTZmpmz8UR4CpquRcI/edit#gid=0")
+
+```
+
+![permiso](permiso.png)
+
+Es decir, necesitas una cuenta de la suite de google para hacer este proceso.
 
