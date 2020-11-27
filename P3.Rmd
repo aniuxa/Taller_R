@@ -1,0 +1,293 @@
+---
+title: "Práctica 3. Inferencia "
+author: "AE"
+date: "26/11/2020"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Previo
+
+## Paquetería
+
+```{r}
+if (!require("pacman")) install.packages("pacman") # instala pacman si se requiere
+pacman::p_load(tidyverse, 
+               readxl,writexl,googlesheets4, # importar hojas de cálculo
+               haven, foreign, # importación de dta y sav
+               sjlabelled, # etiquetas
+               janitor, skimr, #limpieza y verificación
+               imputeTS, # para imputar valores
+               esquisse, # para usar ggplot de manera más amigable
+               DescTools, # Paquete para estimaciones y pruebas
+               infer, # tidy way 
+               broom) # Una escobita para limpiar (pero es para arreglar)
+```
+
+## Directorio
+En caso que no tengas un proyecto,establecer el diretorio puede ayudar
+
+## Bases
+Base de ECOVID - ML
+
+```{r}
+ecovid0420 <- read_dta("https://github.com/aniuxa/R_Demo/raw/master/datos/ecovid0420.dta")
+```
+
+# Revisando ECOVID-ML
+
+Vamos a trabajar con la ECOVID-ML, una nueva fuente desarrollada por INEGI. 
+<https://www.inegi.org.mx/investigacion/ecovidml/2020/>
+
+>Obtener información básica complementaria sobre ocupación y empleo y el efecto sobre el mercado laboral de la pandemia originada por el COVID-19.
+
+>Objetivos específicos
+Identificar a los ocupados y las características básicas del contexto laboral.
+Identificar a los no ocupados, la condición de búsqueda de trabajo, deseo de trabajar y el motivo por el que no buscó trabajo.
+Captar información de los ausentes que retornarán a su trabajo al terminar la contingencia, como acercamiento a la caracterización de la pérdida de trabajo.
+Recopilar información sobre cómo la población está afrontando la pandemia con énfasis en el trabajo, ocupación y empleo.
+Conocer el medio por el que las personas se mantienen informadas de la situación y las medidas de protección que siguen por la contingencia sanitaria.
+
+
+# Revisión con dplyr
+```{r}
+library(dplyr) 
+```
+
+Operador de "pipe" o "tubería" %>% (Ctrl+Shift+M)
+Antes de continuar, presentemos el operador "pipe" %>%. dplyr importa este operador de otro paquete (magrittr). 
+Este operador le permite canalizar la salida de una función a la entrada de otra función. En lugar de funciones de anidamiento (lectura desde adentro hacia afuera), la idea de la tubería es leer las funciones de izquierda a derecha.
+
+```{r}
+ecovid0420 %>% 
+    select(pb1, pb2) %>% 
+    head
+```
+
+```{r}
+ecovid0420 %>% 
+    select(pb1, pb2) %>% 
+    glimpse
+```
+
+## Revisión con skimr
+
+"skimr" es un paquete nos permite tener una perspectiva de nuestra base de datos. Dependiendo del tipo de variable nos da diferentes elementos. La aplicaremos a nuestra base de la ecovid
+
+
+```{r}
+ecovid0420 %>% 
+    skim()
+```
+
+# Un poquito de descriptivos
+
+Vamos a ver un poquito más de estos pipes 
+
+```{r}
+ecovid0420 %>% 
+  select(pb2, pe10_1) %>%  # variables cuantitativas
+   summary() # comando summary
+```
+
+La otra opción es CREAR indicadores de los descriptivos que queremos con el comando "summarise()"
+```{r}
+ecovid0420 %>% 
+   summarise(media=mean(pe10_1, na.rm=T)) # Ojo
+```
+
+Podemos pedir más de un indicador
+```{r}
+ecovid0420 %>% 
+   summarise(media=mean(pe10_1, na.rm=T),
+             mediana=median(pe10_1,na.rm=T),
+             desviación=sd(pe10_1, na.rm=T))
+```
+
+
+Podemos pedirlo para un grupo
+```{r}
+ecovid0420 %>% 
+  group_by(pb1) %>% # agregamos esto en nuestro flujo de trabajo
+   summarise(media=mean(pe10_1, na.rm=T),
+             mediana=median(pe10_1,na.rm=T),
+             desviación=sd(pe10_1, na.rm=T))
+```
+
+
+
+# Hipótesis e intervalos de confianza
+
+## t-test
+Este comando nos sirve para calcular diferentes tipos de test, que tienen como base la distribución t
+
+<b>Univariado para estimación</b>
+
+```{r}
+t.test(ecovid0420$pe10_1)
+```
+
+<b>Univariado para hipótesis específica</b>
+
+```{r}
+t.test(ecovid0420$pe10_1, mu=40)
+t.test(ecovid0420$pe10_1, mu=40, alternative = "two.sided") #default y de dos colas
+t.test(ecovid0420$pe10_1, mu=40, alternative = "less") # cola izquierda
+t.test(ecovid0420$pe10_1, mu=40, alternative = "greater") #cola derecha 
+
+```
+
+## Enchulando un poquito
+
+Los resultados tienen la info, pero la podemos almacenar en un objeto. Con los cálculos de modelos es muy útil guardarlos para compararlos.
+
+```{r}
+t.test0<-t.test(ecovid0420$pe10_1, mu=40, alternative = "less")
+```
+
+Veamos si lo imprimimos
+```{r}
+t.test0
+```
+
+```{r}
+tidy(t.test0)
+```
+La función "tidy()" hace que el resultado se vuelva un "tibble", una tabla muy compatible con el tidyverse. Esto puede ser útil cuando queremos ir comparando estimaciones.
+
+Anteriormente vimos con base cómo hacer inferencia. El paquete "infer" tiene también elementos para inferencia, pero en formato más compatible con tidyverse.
+
+```{r}
+ecovid0420 %>% 
+t_test( response = pe10_1, mu = 40)
+
+```
+
+Como vemos nos da el mismo resultado anterior, pero nos da directamente el resultado en formato tidy.
+
+Si solo queremos el estimador de "t"
+```{r}
+ecovid0420 %>% 
+t_stat(response = pe10_1, mu = 40)
+
+```
+
+Más de este paquete <https://infer.netlify.app/>
+
+
+
+## Proporciones 
+
+Para una proporción en realidad el comando de base es muy sencillo, puesto que necesita 
+```{r}
+table(ecovid0420$clase1)
+prop.test(table(ecovid0420$clase1))
+```
+Ojo, R no utiliza Z para las proporciones. ¿Qué usará?
+
+
+# Estimaciones bivariadas
+
+## Diferencias de medias por grupos
+¿Podemos decir, con significancia estadística que los valores medios de una variable son diferentes entre los grupos?
+
+```{r}
+ecovid0420 %>% 
+    filter(ecovid0420$clase2==1) %>% # nos quedamos con los trabajadores
+      group_by(as_label(pb1)) %>%
+      summarise(avg_hrs = mean(pe10_1, na.rm=T))
+
+ecovid0420 %>% 
+    filter(ecovid0420$clase2==1) %>%
+      with(t.test(pe10_1~pb1))
+```
+
+Con "infer" sería:
+
+```{r}
+ecovid0420 %>% 
+  mutate(pb1=as_label(pb1)) %>% 
+  t_test(pe10_1 ~ pb1, order = c("Hombre", "Mujer") )
+```
+
+# Prueba chi-cuadrado chi-sq. Una aplicación más común
+
+Cuando tenemos dos variables cualitativas o nominales podemos hacer esta la prueba chi-cuadrado, o prueba de independencia. Esta tiene una lógica un poco diferente a las pruebas que hacemos, porque proviene de comparar la distribución de los datos dado que no hay independencia entre las variables y los datos que tenemos.
+
+La hipótesis nula postula una distribución de probabilidad totalmente especificada como el modelo matemático de la población que ha generado la muestra, por lo que si la rechazamos hemos encontrado evidencia estadística sobre la dependencia de las dos variables.
+
+```{r}
+table(ecovid0420$clase2, ecovid0420$pb1)
+chisq.test(ecovid0420$clase2, ecovid0420$pb1)
+
+```
+
+
+# Estimación de varianzas y sus pruebas de hipótesis
+
+Para poder hacer inferencia sobre la varianza utilizamos el comando varTest() del paquete "DescTools"
+
+```{r}
+ecovid0420 %>% 
+    filter(clase2==1) %>% 
+      with(VarTest(pe10_1))
+
+```
+
+Podemos también decir algo sobre el valor objetivo de nuestra hipótesis
+```{r}
+ecovid0420 %>% 
+    filter(clase2==1) %>% 
+      with(VarTest(pe10_1, sigma.squared = 100))
+
+```
+
+Guardar como objeto nuestros resultados, siempres muy conveniente para pedir después o para realizar operaciones con ellos
+```{r}
+test2<-ecovid0420 %>% 
+    filter(clase2==1) %>% 
+      with(VarTest(pe10_1))
+test2$conf.int
+sqrt(test2$conf.int) ## sacamos la raíz cuadrada para tener las
+#desviaciones estándar y sea más fácil de interpretar
+```
+
+Con tidy de "broom"
+
+```{r}
+tidy(test2)
+```
+
+
+# Estimación de diferencias de varianzas y sus pruebas de hipótesis
+
+Para comparar varianza, usamos su "ratio", esto nos da un estadístico de prueba F, para comparar dos muestras de poblaciones normales.
+
+```{r}
+ecovid0420 %>% 
+    filter(clase2==1) %>% 
+      with(var.test(x=pe10_1, y=pb2, ratio=1))
+```
+"x=" declara al numerador
+"y=" declara al denominador
+```{r}
+ecovid0420 %>% 
+    filter(clase2==1) %>% 
+      with(var.test(x=pe10_1, y=pb2, ratio=1, conf.level = 0.98))
+```
+
+
+Si lo que queremos es comparar la varianza entre dos grupos, usamos el signo ~
+```{r}
+ecovid0420 %>% 
+    filter(clase2==1) %>% 
+      with(var.test(pe10_1 ~ as_label(pb1), ratio=1))
+```
