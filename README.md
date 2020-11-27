@@ -29,4 +29,3 @@ Introducción al programa ¡Qué emoción!
 
 [Práctica 3](P3.md)
 
-
