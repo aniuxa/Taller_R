@@ -15,11 +15,13 @@ Profesores ayudantes:
 * Mónica Alejandra Terrones Gómez  <materronesg@politicas.unam.mx> (Matutino)
 
 
-# Sesión 1
+# Primer taller
 
 Introducción al programa ¡Qué emoción!
 
 [Práctica 1](P1.md)
+
+# Segundo taller
 
 [Práctica 2](P2_1.md)
  
