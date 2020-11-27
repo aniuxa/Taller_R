@@ -25,3 +25,6 @@ Introducción al programa ¡Qué emoción!
 
 [Práctica 2](P2_1.md)
  
+# Tercer taller
+
+[Práctica 3](P3.md)
