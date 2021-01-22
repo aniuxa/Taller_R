@@ -32,3 +32,14 @@ Introducción al programa ¡Qué emoción!
 # Cuarto taller
 
 [Práctica 4](P4.md)
+
+
+# Ejemplo de código para trabajo final
+
+[Aquí]("Trabajo final.R")
+
+
+**ggbernie**
+
+[ggbernie]("ggbernie.R")
+
