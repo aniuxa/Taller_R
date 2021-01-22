@@ -36,7 +36,7 @@ Introducción al programa ¡Qué emoción!
 
 # Ejemplo de código para trabajo final
 
-[Aquí](https://github.com/aniuxa/Taller_R/raw/master/Trabajo%20Final.R)
+[Aquí](https://github.com/aniuxa/Taller_R/blob/master/Trabajo%20Final.R)
 
 
 **ggbernie**
