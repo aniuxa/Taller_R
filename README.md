@@ -36,10 +36,10 @@ Introducción al programa ¡Qué emoción!
 
 # Ejemplo de código para trabajo final
 
-[Aquí]("Trabajo final.R")
+[Aquí]("https://github.com/aniuxa/Taller_R/blob/master/Trabajo%20Final.R")
 
 
 **ggbernie**
 
-[ggbernie]("ggbernie.R")
+[ggbernie]("https://github.com/aniuxa/Taller_R/blob/master/ggbernie.R")
 
