@@ -46,8 +46,7 @@ summary(ICE_2018$homicidios)
 
 ICE_2018 %>% 
   tabyl(region2) %>% 
-  adorn_totals() %>% 
-  adorn_totals()
+  adorn_totals() 
 
 
 # Gráficos multivariados  -----------------------------------------------
