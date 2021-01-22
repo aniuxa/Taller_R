@@ -97,3 +97,6 @@ ICE_2018 %>%
   with(
   t.test(competencia_en_servicios_notariales))
 
+
+
+
