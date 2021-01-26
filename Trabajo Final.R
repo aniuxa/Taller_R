@@ -98,4 +98,15 @@ ICE_2018 %>%
 
 
 
+# Modelo  -----------------------------------------------
+
+
+modelo<-ICE_2018 %>% 
+  with(
+    lm(competencia_en_servicios_notariales~pobreza)
+    )
+
+summary(modelo)
+anova(modelo)
+plot(modelo)
 
