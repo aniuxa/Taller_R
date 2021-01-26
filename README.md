@@ -32,3 +32,14 @@ Introducción al programa ¡Qué emoción!
 # Cuarto taller
 
 [Práctica 4](P4.md)
+
+
+# Ejemplo de código para trabajo final
+
+[Aquí](https://github.com/aniuxa/Taller_R/blob/master/Trabajo%20Final.R)
+
+
+**ggbernie**
+
+[ggbernie](https://github.com/aniuxa/Taller_R/blob/master/ggbernie.R)
+
