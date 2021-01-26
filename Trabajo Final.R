@@ -106,6 +106,10 @@ modelo<-ICE_2018 %>%
     lm(competencia_en_servicios_notariales~pobreza)
     )
 
+# o
+
+modelo <-lm(competencia_en_servicios_notariales~pobreza, data=ICE_2018)
+
 summary(modelo)
 anova(modelo)
 plot(modelo)
