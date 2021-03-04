@@ -4,7 +4,7 @@ Profesora titular: Dra. Ana Ruth Escoto Castillo <ana.escoto@politicas.unam.mx >
 
 Profesores ayudantes:
 
-* Mónica Alejandra Terrones Gómez  <materronesg@politicas.unam.mx> (Matutino)
+* Mónica Alejandra Terrones Gómez  <materronesg@politicas.unam.mx> 
 
 * Erick Brandon Serna Barillas <erick.serna@politicas.unam.mx>
 
