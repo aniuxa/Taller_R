@@ -14,3 +14,8 @@ Profesores ayudantes:
 Introducción al programa ¡Qué emoción!
 
 [Práctica 1](P1.md)
+
+
+# Taller lúdico
+
+[mxmaps_y_más](mxmaps_y_mas.R)
