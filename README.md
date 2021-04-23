@@ -18,4 +18,6 @@ Introducción al programa ¡Qué emoción!
 
 # Taller lúdico
 
-[mxmaps_y_más](mxmaps_y_mas.R)
+Uso de mxmaps, memer, ggcats y ggbernie
+
+[Código](mxmaps_y_mas.R)
