@@ -21,3 +21,9 @@ Introducción al programa ¡Qué emoción!
 Uso de mxmaps, memer, ggcats y ggbernie
 
 [Código](mxmaps_y_mas.R)
+
+# ¿Segundo Taller?
+
+Intro a la probabilidad e importación de datos
+
+[Práctica 2](P2_1.md)
